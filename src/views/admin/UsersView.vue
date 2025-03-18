@@ -6,7 +6,6 @@ import { onMounted, ref } from 'vue';
 import UserService from '@/services/user.service';
 import { FilterMatchMode } from '@primevue/core/api';
 
-
 const toast = useToast();
 const users = ref();
 const currentUser = ref({});
@@ -42,7 +41,6 @@ function hideDialog() {
 
 function editUser(u) {
   currentUser.value = { ...u };
-  console.log(currentUser.value);
   userDialog.value = true;
 }
 
@@ -56,17 +54,17 @@ function confirmDeleteSelected() {
 }
 
 function createId() {
-  let max = users.value.reduce((m,i)=>m<i.id?i.id:m ,users.value[0].id)
-  return max + 1
+  let max = users.value.reduce((m, i) => (m < i.id ? i.id : m), users.value[0].id);
+  return max + 1;
 }
 
 function findIndexById(id) {
   let index = -1;
   for (let i = 0; i < users.value.length; i++) {
-      if (users.value[i].id === id) {
-          index = i;
-          break;
-      }
+    if (users.value[i].id === id) {
+      index = i;
+      break;
+    }
   }
   return index;
 }
@@ -75,33 +73,32 @@ function saveUser() {
   submitted.value = true;
 
   if (currentUser?.value.username?.trim()) {
-      if (currentUser.value.id) {
-          users.value[findIndexById(currentUser.value.id)] = currentUser.value;
-          toast.add({ severity: 'success', summary: 'Успешно', detail: 'Данные пользователя обновлены', life: 3000 });
-      } else {
-          currentUser.value.id = createId();
-          users.value.push(currentUser.value);
-          toast.add({ severity: 'success', summary: 'Успешно', detail: 'Новый пользователь создан', life: 3000 });
-      }
+    if (currentUser.value.id) {
+      users.value[findIndexById(currentUser.value.id)] = currentUser.value;
+      toast.add({ severity: 'success', summary: 'Успешно', detail: 'Данные пользователя обновлены', life: 3000 });
+    } else {
+      currentUser.value.id = createId();
+      users.value.push(currentUser.value);
+      toast.add({ severity: 'success', summary: 'Успешно', detail: 'Новый пользователь создан', life: 3000 });
+    }
 
-      userDialog.value = false;
-      currentUser.value = {};
+    userDialog.value = false;
+    currentUser.value = {};
   }
 }
 
-
 function deleteUser() {
-    users.value = users.value.filter((val) => val.id !== currentUser.value.id);
-    deleteUserDialog.value = false;
-    currentUser.value = {};
-    toast.add({ severity: 'success', summary: 'Успешно', detail: 'Пользователь удален', life: 3000 });
+  users.value = users.value.filter((val) => val.id !== currentUser.value.id);
+  deleteUserDialog.value = false;
+  currentUser.value = {};
+  toast.add({ severity: 'success', summary: 'Успешно', detail: 'Пользователь удален', life: 3000 });
 }
 
 function deleteSelectedUsers() {
-    users.value = users.value.filter((val) => !selectedUsers.value.includes(val));
-    deleteUsersDialog.value = false;
-    selectedUsers.value = null;
-    toast.add({ severity: 'success', summary: 'Успешно', detail: 'Пользователи удалены', life: 3000 });
+  users.value = users.value.filter((val) => !selectedUsers.value.includes(val));
+  deleteUsersDialog.value = false;
+  selectedUsers.value = null;
+  toast.add({ severity: 'success', summary: 'Успешно', detail: 'Пользователи удалены', life: 3000 });
 }
 </script>
 
@@ -111,12 +108,25 @@ function deleteSelectedUsers() {
       <Toolbar class="mb-6">
         <template #start>
           <Button label="Новый" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
-          <Button label="Удалить" icon="pi pi-trash" severity="secondary" @click="confirmDeleteSelected"
-            :disabled="!selectedUsers || !selectedUsers.length" />
+          <Button
+            label="Удалить"
+            icon="pi pi-trash"
+            severity="secondary"
+            @click="confirmDeleteSelected"
+            :disabled="!selectedUsers || !selectedUsers.length"
+          />
         </template>
       </Toolbar>
-      <DataTable ref="dt" v-model:selection="selectedUsers" :value="users" dataKey="id" :paginator="true" :rows="10"
-        :filters="filters" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users">
+      <DataTable
+        ref="dt"
+        v-model:selection="selectedUsers"
+        :value="users"
+        dataKey="id"
+        :paginator="true"
+        :rows="10"
+        :filters="filters"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users"
+      >
         <template #header>
           <div class="flex flex-wrap gap-2 items-center justify-between">
             <h2 class="m-0">Управление пользователями</h2>
@@ -173,7 +183,10 @@ function deleteSelectedUsers() {
     <Dialog v-model:visible="deleteUserDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
       <div class="flex items-center gap-4">
         <i class="pi pi-exclamation-triangle !text-3xl" />
-        <span v-if="currentUser">Вы уверены, что хотите удалить <b>{{ currentUser.username }}</b>?</span>
+        <span v-if="currentUser"
+          >Вы уверены, что хотите удалить <b>{{ currentUser.username }}</b
+          >?</span
+        >
       </div>
       <template #footer>
         <Button label="Нет" icon="pi pi-times" text @click="deleteUserDialog = false" />

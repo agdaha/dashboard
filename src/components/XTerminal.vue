@@ -130,7 +130,6 @@ function handleCommand(str) {
       term.write(PROMPT);
       break;
     case 'log':
-      console.log(words);
       if (words.length < 3 || words[1] === '--help') {
         writeLogHelp();
         break;
@@ -215,7 +214,6 @@ function parseLogCommand(words) {
 
 function sendDataToServer(words) {
   let data = parseLogCommand(words);
-  console.log('data: ', data);
   if (!data.data.tag && !data.data.service) {
     term.writeln('\r\n**Необходимо указать хотя бы один из параметров -u или -t');
     writePrimpt();
