@@ -226,6 +226,8 @@ function sendDataToServer(words) {
   }
   if (isOnline) {
     isSendingCommand = true;
+    data.data.since = toISOLocal(data.data.since);
+    data.data.until = toISOLocal(data.data.until);
     wsService.send(data);
   } else {
     term.writeln('\r\n**Сервер не доступен!');
@@ -238,6 +240,23 @@ function isValidDate(d) {
 
 function writePrimpt() {
   term.write('\r\n' + PROMPT);
+}
+
+function toISOLocal(d) {
+  var z  = n =>  ('0' + n).slice(-2);
+  var zz = n => ('00' + n).slice(-3);
+  var off = d.getTimezoneOffset();
+  var sign = off > 0? '-' : '+';
+  off = Math.abs(off);
+
+  return d.getFullYear() + '-'
+         + z(d.getMonth()+1) + '-' +
+         z(d.getDate()) + 'T' +
+         z(d.getHours()) + ':'  +
+         z(d.getMinutes()) + ':' +
+         z(d.getSeconds()) + '.' +
+         zz(d.getMilliseconds()) +
+         sign + z(off/60|0) + ':' + z(off%60);
 }
 </script>
 
